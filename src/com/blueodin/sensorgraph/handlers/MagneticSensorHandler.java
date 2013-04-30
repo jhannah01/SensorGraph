@@ -29,13 +29,7 @@ public class MagneticSensorHandler extends XYZSensorHandler {
 				"Magnetic Field") {
 			@Override
 			protected String formatLabel(double value, boolean isValueX) {
-				if (!isValueX)
-					return getFormattedSensorValue((float)value);
-
-				return DateUtils.getRelativeTimeSpanString((long)value, 
-						System.currentTimeMillis(), 
-						DateUtils.SECOND_IN_MILLIS, 
-						DateUtils.FORMAT_ABBREV_RELATIVE).toString();
+				return formatGraphLabel(value, isValueX);
 			}
 		};
 

@@ -14,11 +14,4 @@ public class AccelerometerSensorHandler extends XYZSensorHandler {
 	public String getSensorUnit() {
 		return "m/s^2";
 	}
-
-	@Override
-	public GraphView getSensorGraph(int size) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

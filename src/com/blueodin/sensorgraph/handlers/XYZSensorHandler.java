@@ -3,7 +3,6 @@ package com.blueodin.sensorgraph.handlers;
 import android.content.Context;
 import android.graphics.Color;
 
-import com.blueodin.sensorgraph.SensorHandler;
 import com.jjoe64.graphview.GraphView.GraphViewData;
 import com.jjoe64.graphview.GraphViewSeries;
 import com.jjoe64.graphview.GraphViewSeries.GraphViewSeriesStyle;
@@ -12,6 +11,17 @@ import java.util.HashMap;
 
 public abstract class XYZSensorHandler extends SensorHandler {
 	private HashMap<AxisValue, GraphViewSeries> mGraphSeriesMap = new HashMap<AxisValue, GraphViewSeries>();
+	
+	public enum AxisValue {
+		X,
+		Y,
+		Z;
+		
+		@Override
+		public String toString() {
+			return String.format("%s Axis", super.toString()); 
+		}
+	}
 	
 	protected XYZSensorHandler(Context context, int sensorType) {
 		super(context, sensorType);

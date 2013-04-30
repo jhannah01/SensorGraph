@@ -23,18 +23,12 @@ public class LightSensorHandler extends SingleValueSensorHandler {
 		return "lux";
 	}
 	
-	@Override
+	/*@Override
 	public GraphView getSensorGraph(int size) {
 		mGraphView = new LineGraphView(getContext(), "Ambient Light") {
 			@Override
 			protected String formatLabel(double value, boolean isValueX) {
-				if (!isValueX)
-					return getFormattedSensorValue((float)value);
-
-				return DateUtils.getRelativeTimeSpanString((long)value, 
-						System.currentTimeMillis(), 
-						DateUtils.SECOND_IN_MILLIS, 
-						DateUtils.FORMAT_ABBREV_RELATIVE).toString();
+				return formatGraphLabel(value, isValueX);
 			}
 		};
 
@@ -46,6 +40,11 @@ public class LightSensorHandler extends SingleValueSensorHandler {
 		mGraphView.setViewPort(System.currentTimeMillis() - size, size);
 		
 		return mGraphView;
+	}*/
+	
+	@Override
+	protected String getGraphTitle() {
+		return "Ambient Light";
 	}
 
 	@Override

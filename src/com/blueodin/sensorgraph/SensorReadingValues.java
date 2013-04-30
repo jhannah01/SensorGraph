@@ -12,6 +12,7 @@ import com.blueodin.sensorgraph.handlers.MagneticSensorHandler;
 import com.blueodin.sensorgraph.handlers.PressureSensorHandler;
 import com.blueodin.sensorgraph.handlers.ProximitySensorHandler;
 import com.blueodin.sensorgraph.handlers.RelativeHumiditySensorHandler;
+import com.blueodin.sensorgraph.handlers.SensorHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;

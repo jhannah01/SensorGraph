@@ -24,31 +24,10 @@ public class PressureSensorHandler extends SingleValueSensorHandler {
 	}
 
 	@Override
-	public GraphView getSensorGraph(int size) {
-		mGraphView = new LineGraphView(getContext(), "Air Pressure") {
-			@Override
-			protected String formatLabel(double value, boolean isValueX) {
-				if (!isValueX)
-					return getFormattedSensorValue((float)value);
-
-				return DateUtils.getRelativeTimeSpanString((long)value, 
-						System.currentTimeMillis(), 
-						DateUtils.SECOND_IN_MILLIS, 
-						DateUtils.FORMAT_ABBREV_RELATIVE).toString();
-			}
-		};
-
-		mGraphView.addSeries(getGraphSeries());
-		
-		mGraphView.setScalable(true);
-		mGraphView.setScrollable(true);
-		mGraphView.setDrawBackground(true);
-		mGraphView.setViewPort(System.currentTimeMillis() - size, size);
-		
-		return mGraphView;
-	}
-
-
+	protected String getGraphTitle() {
+		return "Air Pressure";
+	}	
+	
 	@Override
 	protected String getGraphSeriesTitle() {
 		return "Pressure Values";

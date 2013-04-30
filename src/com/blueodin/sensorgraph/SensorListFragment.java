@@ -13,6 +13,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.blueodin.sensorgraph.handlers.SensorHandler;
+
 import java.util.List;
 
 public class SensorListFragment extends ListFragment {

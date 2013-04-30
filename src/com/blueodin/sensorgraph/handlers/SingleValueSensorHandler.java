@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.hardware.SensorEvent;
 
-import com.blueodin.sensorgraph.SensorHandler;
 import com.jjoe64.graphview.GraphView.GraphViewData;
 import com.jjoe64.graphview.GraphViewSeries;
 import com.jjoe64.graphview.GraphViewSeries.GraphViewSeriesStyle;
@@ -25,6 +24,12 @@ public abstract class SingleValueSensorHandler extends SensorHandler {
 	
 	protected void addDataToSeries(GraphViewData data, boolean scrollToEnd) {
 		mGraphSeries.appendData(data, scrollToEnd);
+	}
+	
+	@Override
+	protected void setupGraphView() {
+		super.setupGraphView();
+		getSensorGraph().addSeries(getGraphSeries());
 	}
 	
 	protected String getGraphTitle() {

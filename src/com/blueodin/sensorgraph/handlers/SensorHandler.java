@@ -1,14 +1,18 @@
-package com.blueodin.sensorgraph;
+package com.blueodin.sensorgraph.handlers;
 
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.text.format.DateUtils;
 
+import com.blueodin.sensorgraph.SensorGraphApplication;
+import com.blueodin.sensorgraph.SensorReadingValues;
 import com.blueodin.sensorgraph.SensorReadingValues.SensorReading;
 import com.blueodin.sensorgraph.SensorReadingValues.SensorType;
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.LineGraphView;
 
 public abstract class SensorHandler implements SensorEventListener {
 	private final Context mContext;
@@ -20,6 +24,8 @@ public abstract class SensorHandler implements SensorEventListener {
 	private int mCount = 0;
 	private SensorReadingValues mSensorReadingValues;
 	
+	private LineGraphView mGraphView;
+	
 	public interface OnSensorChanged {
 		public void onSensorEvent(float[] values);
 		public void onAccuracyChange(int value);
@@ -30,17 +36,6 @@ public abstract class SensorHandler implements SensorEventListener {
 		mSensorReadingValues = ((SensorGraphApplication)context.getApplicationContext()).getSensorReadings();
 		mSensorManager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
 		mSensor = mSensorManager.getDefaultSensor(sensorType);
-	}
-	
-	public enum AxisValue {
-		X,
-		Y,
-		Z;
-		
-		@Override
-		public String toString() {
-			return String.format("%s Axis", super.toString()); 
-		}
 	}
 	
 	public static String getSensorType(Sensor sensor) {
@@ -129,10 +124,34 @@ public abstract class SensorHandler implements SensorEventListener {
 	public abstract String getSensorUnit();
 	public abstract String getFormattedSensorValue(float value);
 	public abstract int getValueCount();
-	public abstract GraphView getSensorGraph(int size);
+	protected abstract String getGraphTitle();
 	
-	public GraphView getSensorGraph() {
-		return getSensorGraph(15 * 1000);
+	public LineGraphView getGraphView() {
+		return getGraphView(15 * 1000);
+	}
+	
+	public LineGraphView getGraphView(int size) {
+		mGraphView = new LineGraphView(getContext(), getGraphTitle()) {
+			@Override
+			protected String formatLabel(double value, boolean isValueX) {
+				return formatGraphLabel(value, isValueX);
+			}
+		};
+
+		setupGraphView(size);
+		
+		return mGraphView;
+	}
+	
+	public LineGraphView getSensorGraph() {
+		return getGraphView(15 * 1000);
+	}
+	
+	protected void setupGraphView(int size) {
+		mGraphView.setScalable(true);
+		mGraphView.setScrollable(true);
+		mGraphView.setDrawBackground(true);
+		mGraphView.setViewPort(System.currentTimeMillis() - size, size);
 	}
 	
 	public String getFormattedSensorValues(float[] values) {
@@ -147,11 +166,19 @@ public abstract class SensorHandler implements SensorEventListener {
 		return value;
 	}
 	
+	protected String formatGraphLabel(double value, boolean isValueX) {
+		if (!isValueX)
+			return getFormattedSensorValue((float)value);
+
+		return DateUtils.getRelativeTimeSpanString((long)value, 
+				System.currentTimeMillis(), 
+				DateUtils.SECOND_IN_MILLIS, 
+				DateUtils.FORMAT_ABBREV_RELATIVE).toString();
+	}
+	
 	public float[] getLastValues() {
 		return mLastValues;
 	}
-	
-	
 
 	public String getSensorType() {
 		return SensorHandler.getSensorType(mSensor);
