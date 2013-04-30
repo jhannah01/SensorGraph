@@ -1,0 +1,50 @@
+<resources>
+
+    <string name="title_activity_settings">SensorGraph Settings</string>
+
+    <!-- General Settings strings -->
+    <string name="pref_header_general">General</string>
+    
+    <string name="pref_title_service_uri">Service URI</string>
+    <string name="pref_description_service_uri">The SensorGraph service URI to use when uploading data</string>
+    <string name="pref_default_service_uri">http://172.16.100.6:7654/upload</string>
+
+    <!-- Sensor related settings -->
+    <string name="pref_header_sensors">Sensors</string>
+    <string name="pref_title_enabled_sensor_types">Enabled Sensors</string>
+    
+    <string-array name="pref_sensor_type_titles">
+        <item>Accelerometer</item>
+        <item>Ambient Temperature</item>
+		<item>Gravity</item>
+		<item>Gyroscope</item>
+		<item>Light</item>
+		<item>Linear Acceleration</item>
+		<item>Magnetic Field</item>
+		<item>Pressure</item>
+		<item>Proximity</item>
+		<item>Relative Humidity</item>
+		<item>Rotation Vector</item>
+    </string-array>
+    
+    <string-array name="pref_sensor_type_values">
+        <item>Accelerometer</item>
+        <item>AmbientTemperature</item>
+        <item>Gravity</item>
+        <item>Gyroscope</item>
+        <item>Light</item>
+        <item>LinearAcceleration</item>
+        <item>MagneticField</item>
+        <item>Pressure</item>
+        <item>Proximity</item>
+        <item>RelativeHumidity</item>
+        <item>RotationVector</item>
+    </string-array>
+    
+    <string-array name="pref_sensor_type_default_values">
+        <item>Accelerometer</item>
+        <item>Gyroscope</item>
+        <item>Pressure</item>
+        <item>MagneticField</item>
+    </string-array>
+</resources>
