@@ -12,8 +12,7 @@ import com.blueodin.sensorgraph.handlers.MagneticSensorHandler;
 import com.blueodin.sensorgraph.handlers.PressureSensorHandler;
 import com.blueodin.sensorgraph.handlers.ProximitySensorHandler;
 import com.blueodin.sensorgraph.handlers.RelativeHumiditySensorHandler;
-import com.blueodin.sensorgraph.handlers.SensorHandler;
-
+import com.blueodin.sensorgraph.handlers.RotationVectorSensorHandler;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -93,17 +92,17 @@ public class SensorReadingValues {
 
 			return SensorType.Unknown;
 		}
-		
+
 		public static SensorHandler getHandler(Context context, Sensor sensor) {
 			return getHandler(context, SensorType.fromSensor(sensor));
 		}
-		
+
 		public static SensorHandler getHandler(Context context, int type) {
 			return getHandler(context, SensorType.fromSensor(type));
 		}
-		
+
 		public static SensorHandler getHandler(Context context, SensorType type) {
-			switch(type) {
+			switch (type) {
 			case Accelerometer:
 				return new AccelerometerSensorHandler(context);
 			case Gravity:
@@ -119,23 +118,22 @@ public class SensorReadingValues {
 			case Pressure:
 				return new PressureSensorHandler(context);
 			case Proximity:
-				return new ProximitySensorHandler(context); 
+				return new ProximitySensorHandler(context);
 			case RelativeHumidity:
 				return new RelativeHumiditySensorHandler(context);
 			case RotationVector:
 				return new RotationVectorSensorHandler(context);
 			default:
 				return null;
- 
+
 			}
 		}
-
 	}
 
 	public static class SensorReading {
-		private SensorType sensorType;
-		private long timestamp;
-		private float[] values;
+		public SensorType sensorType;
+		public long timestamp;
+		public float[] values;
 
 		public SensorReading(SensorType sensorType, long timestamp,
 				float[] values) {
@@ -158,6 +156,11 @@ public class SensorReadingValues {
 
 		public float[] getValues() {
 			return values;
+		}
+		
+		@Override
+		public String toString() {
+			return String.format("Sensor: %s [x=%f,y=%f,z=%f]", sensorType.toString(), values[0], values[1], values[2]);
 		}
 	}
 
@@ -186,11 +189,13 @@ public class SensorReadingValues {
 	}
 
 	public void addReading(SensorReading reading) {
-		if (!mReadingsMap.containsKey(reading.getSensorType()))
-			mReadingsMap.put(reading.getSensorType(),
-					new ArrayList<SensorReading>());
-
-		mReadingsMap.get(reading.getSensorType()).add(reading);
+		synchronized (mReadingsMap) {
+			if (!mReadingsMap.containsKey(reading.getSensorType()))
+				mReadingsMap.put(reading.getSensorType(),
+						new ArrayList<SensorReading>());
+	
+			mReadingsMap.get(reading.getSensorType()).add(reading);
+		}
 	}
 
 	public void clearReadings(SensorType sensorType) {

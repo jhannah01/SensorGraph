@@ -1,4 +1,4 @@
-package com.blueodin.sensorgraph.handlers;
+package com.blueodin.sensorgraph;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -7,12 +7,14 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.text.format.DateUtils;
 
-import com.blueodin.sensorgraph.SensorGraphApplication;
-import com.blueodin.sensorgraph.SensorReadingValues;
 import com.blueodin.sensorgraph.SensorReadingValues.SensorReading;
 import com.blueodin.sensorgraph.SensorReadingValues.SensorType;
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GraphViewSeries;
 import com.jjoe64.graphview.LineGraphView;
+import com.jjoe64.graphview.GraphView.LegendAlign;
+
+import java.util.List;
 
 public abstract class SensorHandler implements SensorEventListener {
 	private final Context mContext;
@@ -23,8 +25,7 @@ public abstract class SensorHandler implements SensorEventListener {
 	private float[] mLastValues = new float[] { 0, 0, 0 };
 	private int mCount = 0;
 	private SensorReadingValues mSensorReadingValues;
-	
-	private LineGraphView mGraphView;
+	private GraphView mGraphView = null;
 	
 	public interface OnSensorChanged {
 		public void onSensorEvent(float[] values);
@@ -36,35 +37,6 @@ public abstract class SensorHandler implements SensorEventListener {
 		mSensorReadingValues = ((SensorGraphApplication)context.getApplicationContext()).getSensorReadings();
 		mSensorManager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
 		mSensor = mSensorManager.getDefaultSensor(sensorType);
-	}
-	
-	public static String getSensorType(Sensor sensor) {
-		switch(sensor.getType()) {
-		case Sensor.TYPE_ACCELEROMETER:
-			return "Accelerometer";
-		case Sensor.TYPE_AMBIENT_TEMPERATURE:
-			return "Ambient Temperature";
-		case Sensor.TYPE_GRAVITY:
-			return "Gravity";
-		case Sensor.TYPE_GYROSCOPE:
-			return "Gyroscope";
-		case Sensor.TYPE_LIGHT:
-			return "Light";
-		case Sensor.TYPE_LINEAR_ACCELERATION:
-			return "Linear Acceleration";
-		case Sensor.TYPE_MAGNETIC_FIELD:
-			return "Magnetic Field";
-		case Sensor.TYPE_PRESSURE:
-			return "Pressure";
-		case Sensor.TYPE_PROXIMITY:
-			return "Proximity";
-		case Sensor.TYPE_RELATIVE_HUMIDITY:
-			return "Relative Humidity";
-		case Sensor.TYPE_ROTATION_VECTOR:
-			return "Rotation Vector";
-		default:
-			return "Unknown";
-		}
 	}
 	
 	protected Context getContext() {
@@ -103,55 +75,42 @@ public abstract class SensorHandler implements SensorEventListener {
 		return mCount;
 	}
 
-	@Override
-	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-		if (sensorChangedCallback != null)
-			sensorChangedCallback.onAccuracyChange(accuracy);
-	}
-	
-	@Override
-	public void onSensorChanged(SensorEvent event) {
-		mLastValues = event.values;
-		
-		mSensorReadingValues.addReading(new SensorReading(SensorType.fromSensor(getSensor()), event.values));
-		
-		mCount++;
-		
-		if (sensorChangedCallback != null)
-			sensorChangedCallback.onSensorEvent(event.values);
-	}
-	
 	public abstract String getSensorUnit();
 	public abstract String getFormattedSensorValue(float value);
+	public abstract String getGraphTitle();
 	public abstract int getValueCount();
-	protected abstract String getGraphTitle();
+	protected abstract List<GraphViewSeries> getGraphSeries();
 	
-	public LineGraphView getGraphView() {
-		return getGraphView(15 * 1000);
+	public GraphView getGraphView() {
+		if(mGraphView == null)
+			return buildGraphView();
+		
+		return mGraphView;
 	}
 	
-	public LineGraphView getGraphView(int size) {
+	public GraphView buildGraphView() {
+		return buildGraphView(15 * 1000);
+	}
+	
+	public GraphView buildGraphView(int size) {
 		mGraphView = new LineGraphView(getContext(), getGraphTitle()) {
 			@Override
 			protected String formatLabel(double value, boolean isValueX) {
 				return formatGraphLabel(value, isValueX);
 			}
 		};
-
-		setupGraphView(size);
 		
-		return mGraphView;
-	}
-	
-	public LineGraphView getSensorGraph() {
-		return getGraphView(15 * 1000);
-	}
-	
-	protected void setupGraphView(int size) {
+		for(GraphViewSeries series : getGraphSeries())
+			mGraphView.addSeries(series);
+		
+		mGraphView.setLegendAlign(LegendAlign.BOTTOM);
+		mGraphView.setLegendWidth(200);
+
 		mGraphView.setScalable(true);
 		mGraphView.setScrollable(true);
-		mGraphView.setDrawBackground(true);
 		mGraphView.setViewPort(System.currentTimeMillis() - size, size);
+		
+		return mGraphView;
 	}
 	
 	public String getFormattedSensorValues(float[] values) {
@@ -181,6 +140,24 @@ public abstract class SensorHandler implements SensorEventListener {
 	}
 
 	public String getSensorType() {
-		return SensorHandler.getSensorType(mSensor);
+		return SensorReadingValues.SensorType.fromSensor(mSensor).toString();
+	}
+	
+	@Override
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {
+		if (sensorChangedCallback != null)
+			sensorChangedCallback.onAccuracyChange(accuracy);
+	}
+	
+	@Override
+	public void onSensorChanged(SensorEvent event) {
+		mLastValues = event.values;
+		
+		mSensorReadingValues.addReading(new SensorReading(SensorType.fromSensor(getSensor()), event.values));
+		
+		mCount++;
+		
+		if (sensorChangedCallback != null)
+			sensorChangedCallback.onSensorEvent(event.values);
 	}
 }

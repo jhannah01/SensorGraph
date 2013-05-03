@@ -3,7 +3,7 @@ package com.blueodin.sensorgraph.handlers;
 import android.content.Context;
 import android.hardware.Sensor;
 
-import com.jjoe64.graphview.GraphView;
+import com.blueodin.sensorgraph.XYZSensorHandler;
 
 public class LinearAccelerationSensorHandler extends XYZSensorHandler {
 	public LinearAccelerationSensorHandler(Context context) {
@@ -16,9 +16,7 @@ public class LinearAccelerationSensorHandler extends XYZSensorHandler {
 	}
 
 	@Override
-	public GraphView getSensorGraph(int size) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getGraphTitle() {
+		return "Linear Acceleration";
 	}
-
 }

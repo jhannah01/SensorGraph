@@ -1,4 +1,4 @@
-package com.blueodin.sensorgraph.handlers;
+package com.blueodin.sensorgraph;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -8,7 +8,8 @@ import com.jjoe64.graphview.GraphView.GraphViewData;
 import com.jjoe64.graphview.GraphViewSeries;
 import com.jjoe64.graphview.GraphViewSeries.GraphViewSeriesStyle;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class SingleValueSensorHandler extends SensorHandler {
 	private GraphViewSeries mGraphSeries;
@@ -18,28 +19,20 @@ public abstract class SingleValueSensorHandler extends SensorHandler {
 		setupGraphSeries();
 	}
 
-	protected GraphViewSeries getGraphSeries() {
-		return mGraphSeries;
-	}
-	
-	protected void addDataToSeries(GraphViewData data, boolean scrollToEnd) {
-		mGraphSeries.appendData(data, scrollToEnd);
-	}
-	
 	@Override
-	protected void setupGraphView() {
-		super.setupGraphView();
-		getSensorGraph().addSeries(getGraphSeries());
+	protected List<GraphViewSeries> getGraphSeries() {
+		List<GraphViewSeries> series = new ArrayList<GraphViewSeries>();
+		series.add(mGraphSeries);
+		return series;
 	}
 	
-	protected String getGraphTitle() {
-		return String.format("%s Values", getSensorType());
+	protected void addDataToSeries(float value) {
+		mGraphSeries.appendData(new GraphViewData(System.currentTimeMillis(), value), false);
 	}
 	
 	protected abstract String getGraphSeriesTitle();
-	
 	protected GraphViewSeriesStyle getGraphViewSeriesStyle() {
-		return new GraphViewSeriesStyle(Color.RED, 2);
+		return new GraphViewSeriesStyle(Color.GREEN, 2);
 	}
 	
 	protected void setupGraphSeries() {
@@ -63,6 +56,9 @@ public abstract class SingleValueSensorHandler extends SensorHandler {
 	public void onSensorChanged(SensorEvent event) {
 		super.onSensorChanged(event);
 		
-		addDataToSeries(new GraphViewData(System.currentTimeMillis(), event.values[0]), false);
+		addDataToSeries(event.values[0]);
+		
+		if((getCount() % 4) == 0)
+			getGraphView().scrollToEnd();
 	}
 }

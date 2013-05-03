@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <style name="AppTheme" parent="@android:style/Theme.Holo"></style>
+
+    <style name="Text.Small.Alt" parent="@style/Text.Small">
+        <item name="android:textColor">@color/small_alt</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+    
+    <style name="Text.Default.Alt" parent="@style/Text.Default">
+        <item name="android:textColor">@color/default_alt</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+    
+    <style name="Text.Label.Alt" parent="@style/Text.Label">
+        <item name="android:textColor">@color/label_alt</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+    
+    <style name="Text.Label.Red" parent="@style/Text.Label">
+        <item name="android:textColor">@color/label_red</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+    
+    <style name="Text.Large.Alt" parent="@style/Text.Large">
+        <item name="android:textColor">@color/large_alt</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+    
+</resources>

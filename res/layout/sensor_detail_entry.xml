@@ -114,27 +114,10 @@
         android:id="@+id/check_use_autoscroll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/layout_graph_holder"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
         android:checked="true"
         android:text="@string/label_auto_scroll" />
-
-    <ToggleButton
-        android:id="@+id/toggle_show_legend"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/check_use_autoscroll"
-        android:layout_toRightOf="@+id/label_show_legend" />
-
-    <TextView
-        android:id="@+id/label_show_legend"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/toggle_show_legend"
-        android:layout_alignParentLeft="true"
-        android:layout_marginRight="5dp"
-        android:text="@string/label_show_legend"
-        android:textAppearance="@style/Text.Label" />
     
     <FrameLayout
         android:id="@+id/layout_graph_holder"

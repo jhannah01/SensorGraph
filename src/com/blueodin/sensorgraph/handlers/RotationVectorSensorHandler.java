@@ -1,10 +1,9 @@
-package com.blueodin.sensorgraph;
+package com.blueodin.sensorgraph.handlers;
 
 import android.content.Context;
 import android.hardware.Sensor;
 
-import com.blueodin.sensorgraph.handlers.XYZSensorHandler;
-import com.jjoe64.graphview.GraphView;
+import com.blueodin.sensorgraph.XYZSensorHandler;
 
 public class RotationVectorSensorHandler extends XYZSensorHandler {
 	public RotationVectorSensorHandler(Context context) {
@@ -17,9 +16,7 @@ public class RotationVectorSensorHandler extends XYZSensorHandler {
 	}
 
 	@Override
-	public GraphView getSensorGraph(int size) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getGraphTitle() {
+		return "Rotation Vector";
 	}
-
 }

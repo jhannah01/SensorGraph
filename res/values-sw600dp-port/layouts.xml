@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- BEGIN_INCLUDE(all) -->
+<resources>
+    <item name="main_layout" type="layout">@layout/one_pane</item>
+    <bool name="has_two_panes">false</bool>
+</resources>
+<!-- END_INCLUDE(all) -->

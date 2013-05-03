@@ -10,11 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import com.blueodin.sensorgraph.handlers.SensorHandler;
-
 import java.util.List;
 
 public class SensorListFragment extends ListFragment {
@@ -22,26 +20,40 @@ public class SensorListFragment extends ListFragment {
 	
 	private OnSensorListInteractionListener mListener;
 	private SensorManager mSensorManager;
-
+	
 	private class SensorListAdapter extends ArrayAdapter<Sensor> {
 		private LayoutInflater mInflater;
 
+		@SuppressWarnings("deprecation")
 		public SensorListAdapter(Context context, List<Sensor> sensors) {
-			super(context, android.R.layout.simple_list_item_2, sensors);
+			super(context, R.layout.sensor_list_row);
 			mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			
+			for(Sensor sensor : sensors) {
+				if(sensor.getType() != Sensor.TYPE_ORIENTATION)
+					add(sensor);
+			}
+			
 		}
 		
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			Sensor sensor = getItem(position);
+			final Sensor sensor = getItem(position);
 			
 			if(convertView == null)
-				convertView = mInflater.inflate(android.R.layout.simple_list_item_2, parent, false);
+				convertView = mInflater.inflate(R.layout.sensor_list_row, parent, false);
 			
-			((TextView)convertView.findViewById(android.R.id.text1)).setText(sensor.getName());
+			((TextView)convertView.findViewById(R.id.text_sensor_name)).setText(sensor.getName());
 			
-			((TextView)convertView.findViewById(android.R.id.text2))
-				.setText(String.format("%s - %s [%s]", SensorHandler.getSensorType(sensor), sensor.getVendor(), sensor.getVersion()));
+			((TextView)convertView.findViewById(R.id.text_sensor_type))
+				.setText(String.format("%s - %s [%s]", SensorReadingValues.SensorType.fromSensor(sensor).toString(), sensor.getVendor(), sensor.getVersion()));
+			
+			((CompoundButton)convertView.findViewById(R.id.button_toggle_sensor)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					mListener.onToggleSensor(sensor, isChecked);
+				}
+			});
 			
 			return convertView;
 		}		
@@ -76,13 +88,19 @@ public class SensorListFragment extends ListFragment {
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		super.onListItemClick(l, v, position, id);
-
-		if (null != mListener)
-			mListener.onSensorSelected(mAdapter.getItem(position));
+		mListener.onSensorSelected(mAdapter.getItem(position));
+	}
+	
+	
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		
+		getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 	}
 
 	public interface OnSensorListInteractionListener {
 		public void onSensorSelected(Sensor sensor);
+		public void onToggleSensor(Sensor sensor, boolean enable);
 	}
 }

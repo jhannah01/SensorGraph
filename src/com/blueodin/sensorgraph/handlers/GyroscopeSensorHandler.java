@@ -3,6 +3,8 @@ package com.blueodin.sensorgraph.handlers;
 import android.content.Context;
 import android.hardware.Sensor;
 
+import com.blueodin.sensorgraph.XYZSensorHandler;
+
 public class GyroscopeSensorHandler extends XYZSensorHandler {
 	public GyroscopeSensorHandler(Context context) {
 		super(context, Sensor.TYPE_GYROSCOPE);
@@ -14,7 +16,7 @@ public class GyroscopeSensorHandler extends XYZSensorHandler {
 	}
 
 	@Override
-	protected String getGraphTitle() {
+	public String getGraphTitle() {
 		return "Gyroscopic Rotation";
 	}
 	

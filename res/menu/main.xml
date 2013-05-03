@@ -4,7 +4,18 @@
         android:id="@+id/menu_settings"
         android:showAsAction="never"
         android:title="@string/menu_settings"/>
-    
+    <item
+        android:id="@+id/menu_upload"
+        android:showAsAction="ifRoom"
+        android:icon="@android:drawable/ic_menu_upload"
+        android:title="@string/menu_upload" />
+    <item
+        android:id="@+id/menu_toggle_logging"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/ic_menu_graph"
+        android:checkable="true"
+        android:checked="false"
+        android:title="@string/menu_toggle_logging"/>
     <item
         android:id="@+id/menu_exit"
         android:showAsAction="never"
